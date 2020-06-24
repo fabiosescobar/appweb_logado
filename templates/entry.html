@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br/>
+      <div class="jumbotron">
+        <h1 class="display-4">Sprint 1</h1>
+        <p class="lead">Entrega de autenticação de usuário na web</p>
+        <hr class="my-4">
+        {% if smessage %}
+          <div class="alert alert-success">
+            {{ smessage }}
+          </div>
+        {% endif %}
+        {% if umessage %}
+          <div class="alert alert-danger">
+            {{ umessage }}
+          </div>
+        {% endif %}
+<h2>{{ the_title }}</h2>
+<form method='POST' action='/search4'>
+	<div class="form-group">
+    <label for="exampleInputEmail1">Endereço de e-mail:</label>
+    <input type="email" class="form-control" name="name" placeholder="E-mail">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Senha:</label>
+    <input type="password" class="form-control" name="pwd" placeholder="Senha">
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox"> Lembrar a senha.</label>
+  </div>
+  <button type="submit" class="btn btn-info">Entrar</button>
+</form>
+<div class="row">
+          <div class="col-sm">
+            <a href="/forgot_password" class="text-decoration-none">Esqueceu a senha?</a>
+          </div>
+          <div class="col-sm">
+            <h5><a href="/novo" class="text-decoration-none">Novo usuário</a></h5>
+          </div>
+        </div>
+
+     </div>
+{% endblock %}
