@@ -72,17 +72,19 @@ def do_search() -> 'html':
 				account=auth.get_account_info(user['idToken'])
 				userinf=account['users']
 				userloc=userinf[0]
-				userid=userloc['localId']
-				useremail=userloc['email']
-				query = db.collection('sistemusers').where('userid', '==', userid)
+				session['userid']=userloc['localId']
+				session['useremail']=userloc['email']
+				query = db.collection('sistemusers').where('userid', '==', session.get('userid'))
 				docs= query.stream()
 				docs_dict = {doc.id:doc.to_dict() for doc in docs}
-				userfields=docs_dict[useremail]
+				userfields=docs_dict[session.get('useremail')]
 				session['username']=userfields['nickname']
+				session['nomecompl']=userfields['completename']
 				return render_template('home.html',
 										the_title='Bem-vindo, ',
 										#all_information=account,
-										the_user=session.get('username'))
+										the_user=session.get('username'),
+										the_completename=session.get('nomecompl'))
 			except:
 				unsuccessful = 'Favor, verifique e-mail e senha informados.'
 				return render_template('entry.html', umessage=unsuccessful)
@@ -106,7 +108,8 @@ def do_verification() -> 'html':
 				doc_ref = db.collection('sistemusers').document(useremail)
 				doc_ref.set({
 					'userid':userid,
-					'nickname':nickname
+					'nickname':nickname,
+					'completename':''
 					})
 				auth.send_email_verification(user['idToken'])
 				return render_template('entry.html', the_title='Verifique sua caixa de e-mail e faça seu login:')
@@ -121,6 +124,23 @@ def do_verification() -> 'html':
 def consultar_dados() -> 'html':
 	return render_template('meu_cadastro.html', the_title='Meu cadastro ')
 
+@app.route('/pre_atualizar', methods=['GET', 'POST'])
+@check_logged_in
+def pre_atualizar() -> 'html':
+	return render_template('update_userinfo.html')
+
+@app.route('/atualizar_dados', methods=['GET', 'POST'])
+@check_logged_in
+def atualizar_dados() -> 'html':
+	if (request.method == 'POST'):
+			completename = request.form['completename']
+			try:
+				query = db.collection('sistemusers').where('userid', '==', session.get('userid'))
+				query.update({'completename':completename})
+			except:
+				unsuccessful = 'Não foi possível atualizar os dados.'
+				return render_template('update_userinfo.html', umessage=unsuccessful)
+	return render_template('update_userinfo.html', umessage=unsuccessful)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def do_logout() -> 'html':

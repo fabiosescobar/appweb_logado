@@ -19,7 +19,16 @@
     </li>
   </ul>
   <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      Nome completo:{{the_completename}}
+      <form method='POST' action='/pre_atualizar'>
+        <div class="form-group">
+          <div class="row">
+            <div class="col"><button type="submit" class="btn btn-info">Atualizar</button></div>
+          </div>
+        </div>
+      </form>
+    </div>
     <div class="tab-pane fade" id="perfil" role="tabpanel" aria-labelledby="profile-tab">...</div>
     <div class="tab-pane fade" id="contato" role="tabpanel" aria-labelledby="contact-tab">...</div>
   </div>
