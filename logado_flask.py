@@ -119,7 +119,7 @@ def do_verification() -> 'html':
 @app.route('/consultar_dados', methods=['POST'])
 @check_logged_in
 def consultar_dados() -> 'html':
-	return render_template('meu_cadastro.html', the_title='Meu cadastro: ')
+	return render_template('meu_cadastro.html', the_title='Meu cadastro ')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
