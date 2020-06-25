@@ -135,12 +135,19 @@ def atualizar_dados() -> 'html':
 	if (request.method == 'POST'):
 			completename = request.form['completename']
 			try:
-				query = db.collection('sistemusers').where('userid', '==', session.get('userid'))
-				query.update({'completename':completename})
+				dados_query = db.collection('sistemusers').document(session.get('useremail'))
+				dados_query.update({'completename':completename})
+				return render_template('home.html',
+										the_title='Bem-vindo, ',
+										the_user=session.get('username'),
+										the_completename=completename)
 			except:
-				unsuccessful = 'Não foi possível atualizar os dados.'
-				return render_template('update_userinfo.html', umessage=unsuccessful)
-	return render_template('update_userinfo.html', umessage=unsuccessful)
+				unsuccessful = "Não foi possível atalizar os dados."
+				return render_template('home.html',
+										umessage=unsuccessful, 
+										the_title='Bem-vindo, ',
+										the_user=session.get('username'))
+	return render_template('home.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def do_logout() -> 'html':
