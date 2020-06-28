@@ -38,7 +38,8 @@ def incluir() -> 'html':
 	if(request.method == 'POST'):
 		email = request.form['name']
 		pwd1 = request.form['pwd1']
-		pwd2 =request.form['pwd2']
+		pwd2 = request.form['pwd2']
+		#concorda = request.form['concorda']
 		if (pwd1 == pwd2):
 				password = pwd2
 				try:
@@ -62,6 +63,7 @@ def forgot_password():
 
 
 @app.route('/search4', methods=['GET', 'POST'])
+
 def do_search() -> 'html':
 	if (request.method == 'POST'):
 			email = request.form['name']
@@ -80,11 +82,17 @@ def do_search() -> 'html':
 				userfields=docs_dict[session.get('useremail')]
 				session['username']=userfields['nickname']
 				session['nomecompl']=userfields['completename']
+				session['conf']=userfields['confirmed']
+				if (session.get('conf') == 2):
+					umessage_conf = 'Favor, envie documentação comprobatória assinada digitalmente'
+				elif (session.get('conf') == 3):
+					umessage_conf = 'Dados confirmados.'
 				return render_template('home.html',
 										the_title='Bem-vindo, ',
 										#all_information=account,
 										the_user=session.get('username'),
-										the_completename=session.get('nomecompl'))
+										the_completename=session.get('nomecompl'),
+										umessage_name=umessage_conf)
 			except:
 				unsuccessful = 'Favor, verifique e-mail e senha informados.'
 				return render_template('entry.html', umessage=unsuccessful)
@@ -109,7 +117,9 @@ def do_verification() -> 'html':
 				doc_ref.set({
 					'userid':userid,
 					'nickname':nickname,
-					'completename':''
+					'completename':'',
+					'confirmed':1
+					'nivel':1
 					})
 				auth.send_email_verification(user['idToken'])
 				return render_template('entry.html', the_title='Verifique sua caixa de e-mail e faça seu login:')
@@ -136,11 +146,14 @@ def atualizar_dados() -> 'html':
 			completename = request.form['completename']
 			try:
 				dados_query = db.collection('sistemusers').document(session.get('useremail'))
-				dados_query.update({'completename':completename})
+				dados_query.update({'completename':completename,
+									'confirmed':2})
+				unsuccessful = ' (Favor, envie documentação comprobatória assinada digitalmente.)'
 				return render_template('home.html',
 										the_title='Bem-vindo, ',
 										the_user=session.get('username'),
-										the_completename=completename)
+										the_completename=completename,
+										umessage_name=unsuccessful)
 			except:
 				unsuccessful = "Não foi possível atalizar os dados."
 				return render_template('home.html',

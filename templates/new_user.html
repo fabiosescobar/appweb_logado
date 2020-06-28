@@ -18,8 +18,8 @@
         {% endif %}
 
 	<h2>{{ the_title }}</h2>
-	<form method='POST' action='/novo'>
-		  <div class="form-group">
+  <form method='POST' action='/novo'>
+      <div class="form-group">
     	<label for="exampleInputEmail1">Endereço de e-mail:</label>
     	<input type="email" class="form-control" name="name">
   		</div>
@@ -30,9 +30,38 @@
   		<div class="form-group">
     	<label for="exampleInputPassword1">Favor, repetir a senha:</label>
     	<input type="password" class="form-control" name="pwd2" placeholder="Senha com, no mínimo, 6 caracteres.">
-  		</div>
-  		<button type="submit" class="btn btn-info">Criar</button>
-	</form>
-</div>
+      </div>
+      <div class="form-row align-items-center">
+        <div class="col-5-shrink">
+          Concordo com os <a href="#">termos e condições</a></label>.
+        </div>        
+        <div class="col-5">
+          <select class="custom-select" onclick="myFunction()" id="inputGroupSelect01" name="concorda">
+            <option selected>Concorda?</option>
+            <option value="1">Sim</option>
+            <option value="2">Não</option>
+          </select>
+         </div>
+        <div class="col-2">
+         <button type="submit" class="btn btn-info" style= "visibility: hidden" id="btn1">Criar</button>
+        </div>
+        <script>
+          function myFunction() {
+            var habilitar = document.getElementById("inputGroupSelect01");
+            var opcao = habilitar.value;
+            if (opcao == 1)
+            {
+            document.getElementById("btn1").style.visibility="visible";
+            }
+            else
+            {
+            document.getElementById("btn1").style.visibility="hidden";
+            }
+          }
+          </script>
+      </div>
+
+    </form>
+  </div>
 
 {% endblock %}
