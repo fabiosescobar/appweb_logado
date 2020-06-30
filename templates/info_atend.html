@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block body %}
+ <br/>
+      <div class="jumbotron">
+        <h1 class="display-4">Informações do usuário</h1>
+        <p class="lead">Altera nível do usuário:</p>
+        <hr class="my-4">
+      {% if aumessage %}
+        <div class="alert alert-success">
+          {{ aumessage }}
+        </div>
+      {% endif %}
+      {% if umessage %}
+        <div class="alert alert-danger">
+          {{ umessage }}
+        </div>
+      {% endif %}
+        
+
+    <h5>Email do usuário: {{ the_email }}</h5>
+    <h5>Nome do usuário: {{ the_nickname }}</h5>
+    <h5>Nome completo: {{ the_completename }}</h5>
+    <h5>Informações confirmadas? (2-Não; 3-Sim): {{ the_confirmed }}</h5>
+    <h5>Nível (1-Usário comum; 2-Atendente): {{ the_nivel }}</h5>
+    
+  <form method='POST' action='/salvar_atendente'>
+    <div class='row'>
+      <div class="col">
+        <select class="custom-select" id="inputGroupSelect02" name="nivelsalvo">
+          <option selected>Escolha o nível do usuário</option>
+          <option value= "1">Usuário comum</option>
+          <option value= "2">Atendente</option>
+        </select>
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-info" id="btn2">Salvar nível</button>
+      </div>
+    
+
+  </form>
+  <form method='POST' action='/logout'>
+    <div class="form-group">
+      <div class="row">
+        <div class="col"><button type="submit" class="btn btn-info">Sair</button></div>
+      </div>
+    </div>
+  </form>
+  </div>
+
+{% endblock %}

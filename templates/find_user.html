@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br/>
+<div class="jumbotron">
+        <h1 class="display-4">Buscar atendente</h1>
+        <p class="lead">Digite o email do atendente:</p>
+        <hr class="my-4">
+        {% if umessage %}
+          <div class="alert alert-danger">
+            {{ umessage }}
+          </div>
+        {% endif %}
+
+	<h2>{{ the_title }}</h2>
+  <form method='POST' action='/autorizar_atend'>
+    <div class="form-group">
+    	<label for="exampleInputEmail1">Endereço de e-mail:</label>
+    	<input type="email" class="form-control" name="email_atend">
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col"><button type="submit" class="btn btn-info">Buscar</button></div>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

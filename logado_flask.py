@@ -83,22 +83,57 @@ def do_search() -> 'html':
 				session['username']=userfields['nickname']
 				session['nomecompl']=userfields['completename']
 				session['conf']=userfields['confirmed']
-				if (session.get('conf') == 2):
-					umessage_conf = 'Favor, envie documentação comprobatória assinada digitalmente'
-				elif (session.get('conf') == 3):
-					umessage_conf = 'Dados confirmados.'
-				return render_template('home.html',
-										the_title='Bem-vindo, ',
-										#all_information=account,
-										the_user=session.get('username'),
-										the_completename=session.get('nomecompl'),
-										umessage_name=umessage_conf)
+				session['permission']=userfields['nivel']
+				if(session.get('permission') == 1):
+						if (session.get('conf') == 2):
+								umessage_conf = 'Favor, envie documentação comprobatória assinada digitalmente'
+								return render_template('home.html',
+												the_title='Bem-vindo, ',
+												the_user=session.get('username'),
+												the_completename=session.get('nomecompl'),
+												umessage_name=umessage_conf)
+						elif (session.get('conf') == 3):
+								smessage_conf = 'Dados confirmados.'
+								return render_template('home.html',
+												the_title='Bem-vindo, ',
+												the_user=session.get('username'),
+												the_completename=session.get('nomecompl'),
+												smessage_name=smessage_conf)
+						else:
+								amessage_conf = 'Não há informações inseridas no cadastro.'
+								return render_template('home.html',
+												the_title='Bem-vindo, ',
+												the_user=session.get('username'),
+												the_completename=session.get('nomecompl'),
+												amessage_name=amessage_conf)
+				else:
+						if (session.get('conf') == 2):
+								umessage_conf = 'Favor, envie documentação comprobatória assinada digitalmente'
+								return render_template('home_atend.html',
+												the_title='Bem-vindo, ',
+												the_user=session.get('username'),
+												the_completename=session.get('nomecompl'),
+												umessage_name=umessage_conf)
+						elif (session.get('conf') == 3):
+								smessage_conf = 'Dados confirmados.'
+								return render_template('home_atend.html',
+												the_title='Bem-vindo, ',
+												the_user=session.get('username'),
+												the_completename=session.get('nomecompl'),
+												smessage_name=smessage_conf)
+						else:
+								amessage_conf = 'Não há informações inseridas no cadastro.'
+								return render_template('home_atend.html',
+												the_title='Bem-vindo, ',
+												the_user=session.get('username'),
+												the_completename=session.get('nomecompl'),
+												amessage_name=amessage_conf)
 			except:
 				unsuccessful = 'Favor, verifique e-mail e senha informados.'
 				return render_template('entry.html', umessage=unsuccessful)
 	return render_template('entry.html')
 
-
+@app.route('/enable_atend', methods=['GET', 'POST'])
 
 @app.route('/verified', methods=['GET', 'POST'])
 def do_verification() -> 'html':
@@ -118,7 +153,7 @@ def do_verification() -> 'html':
 					'userid':userid,
 					'nickname':nickname,
 					'completename':'',
-					'confirmed':1
+					'confirmed':1,
 					'nivel':1
 					})
 				auth.send_email_verification(user['idToken'])
@@ -129,10 +164,69 @@ def do_verification() -> 'html':
 	return render_template('pre_entry.html')
 
 
-@app.route('/consultar_dados', methods=['POST'])
+@app.route('/buscar_usuario', methods=['GET', 'POST'])
 @check_logged_in
-def consultar_dados() -> 'html':
-	return render_template('meu_cadastro.html', the_title='Meu cadastro ')
+def buscar_usuario() -> 'html':
+	return render_template('find_user.html', the_title='Selecionar usuário.')
+
+@app.route('/autorizar_atend', methods=['GET', 'POST'])
+@check_logged_in
+def autorizar_atend() -> 'html':
+	if (request.method == 'POST'):
+			session['email_atend'] = request.form['email_atend']
+			init_query = db.collection('sistemusers').document(session.get('email_atend'))
+			init_docs=init_query.get()
+			atend_docs=init_docs.to_dict()
+			session['atendname']=atend_docs['nickname']
+			session['atendcompl']=atend_docs['completename']
+			session['atendconf']=atend_docs['confirmed']
+			session['atendperm']=atend_docs['nivel']
+			try:
+				user_query = db.collection('sistemusers').document(session.get('email_atend'))
+				docs = user_query.get()
+				if docs.exists:
+						return render_template('info_atend.html',
+												the_email = session.get('email_atend'),
+												the_nickname = session.get('atendname'),
+												the_completename = session.get('atendcompl'),
+												the_confirmed = session.get('atendconf'),
+												the_nivel = session.get('atendperm'))							
+			except: 
+				unsuccessful = 'Atendente não cadastrado.'
+				return render_template('find_user.html',
+										umassage=unsuccessful,
+										the_title=session.get('email_atend'))																	
+	return render_template('find_user.html')
+
+@app.route('/salvar_atendente', methods=['GET', 'POST'])
+@check_logged_in
+def salvar_atendente() -> 'html':
+	if (request.method == 'POST'):
+			nivelsalvo = request.form['nivelsalvo']
+			try:
+				user_query = db.collection('sistemusers').document(session.get('email_atend'))
+				user_query.update({'nivel':nivelsalvo})
+				if(nivelsalvo == '2'):
+						nivmessage="Nível 2-'Atendente' salvo com sucesso."
+				else:
+						nivmessage="Nível 1-'Usuário comum' salvo com sucessso."
+				return render_template('info_atend.html',
+										aumessage = nivmessage,
+										the_email = session.get('email_atend'),
+										the_nickname = session.get('atendname'),
+										the_completename = session.get('atendcompl'),
+										the_confirmed = session.get('atendconf'),
+										the_nivel = nivelsalvo)
+			except:
+				umassage='Não foi possível salvar o nível do usuário.'
+				return render_template('info_atend.html',
+										aumessage = umassage,
+										the_email = session.get('email_atend'),
+										the_nickname = session.get('atendname'),
+										the_completename = session.get('atendcompl'),
+										the_confirmed = session.get('atendconf'),
+										the_nivel = session.get('atendperm'))
+	return render_template('find_user.html')
 
 @app.route('/pre_atualizar', methods=['GET', 'POST'])
 @check_logged_in

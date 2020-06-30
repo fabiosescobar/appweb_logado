@@ -26,6 +26,9 @@
     <li class="nav-item">
       <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contato" role="tab" aria-controls="contact" aria-selected="false">Contatos</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="sistema-tab" data-toggle="tab" href="#sistema" role="tab" aria-controls="contact" aria-selected="false">Sistema</a>
+      </li>
   </ul>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -62,6 +65,16 @@
     </div>
     <div class="tab-pane fade" id="perfil" role="tabpanel" aria-labelledby="profile-tab">...</div>
     <div class="tab-pane fade" id="contato" role="tabpanel" aria-labelledby="contact-tab">...</div>
+    <div class="tab-pane fade" id="sistema" role="tabpanel" aria-labelledby="sistema-tab">
+        <form method='POST' action='/buscar_usuario'>
+            <div class="form-group">
+              <div class="row">
+                <div class="col"><button type="submit" class="btn btn-info">Novo atendente</button></div>
+              </div>
+            </div>
+          </form>
+
+    </div>
   </div>
 
   <form method='POST' action='/logout'>
