@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br/>
+<div class="jumbotron">
+        <h1 class="display-4">Usuários com dados pendetentes</h1>
+        <p class="lead">Lista de pendências:</p>
+        <hr class="my-4">
+        {% for row in array_pendentes %}
+        <form method='POST' action='/confirmar_dados'>
+            <div class="form-group">
+            <input type="text" name="{{row}}" placeholder="{{row}}" readonly/>
+            {% for indiv in array_pendentes[row] %}
+            <p>{{indiv}} :
+            {{array_pendentes[row][indiv]}}</p>
+            {% endfor %}
+                 <div class="row">
+                    <div class="col"><button type="submit" class="btn btn-info">Confirmar</button></div>
+                  </div>
+                </div>
+              </form>
+              <hr class="my-4">
+        {% endfor %}
+
+	
+    <form method='POST' action='/logout'>
+        <div class="form-group">
+          <div class="row">
+            <div class="col"><button type="submit" class="btn btn-info">Sair</button></div>
+          </div>
+        </div>
+      </form>
+</div>
+
+{% endblock %}

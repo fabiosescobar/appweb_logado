@@ -242,7 +242,7 @@ def atualizar_dados() -> 'html':
 				dados_query = db.collection('sistemusers').document(session.get('useremail'))
 				dados_query.update({'completename':completename,
 									'confirmed':2})
-				unsuccessful = ' (Favor, envie documentação comprobatória assinada digitalmente.)'
+				unsuccessful = 'Favor, envie documentação comprobatória assinada digitalmente.'
 				return render_template('home.html',
 										the_title='Bem-vindo, ',
 										the_user=session.get('username'),
@@ -255,6 +255,27 @@ def atualizar_dados() -> 'html':
 										the_title='Bem-vindo, ',
 										the_user=session.get('username'))
 	return render_template('home.html')
+
+@app.route('/exibir_pendentes', methods=['GET', 'POST'])
+@check_logged_in
+def exibir_pendentes() -> 'html':
+	if (request.method == 'POST'):
+			try:
+				pend_query = db.collection('sistemusers').where('confirmed', '==', 2)
+				docs= pend_query.stream()
+				docs_pend = {doc.id:doc.to_dict() for doc in docs}
+				return render_template('show_pend.html',
+										array_pendentes = docs_pend)
+			except:
+				umessage = 'Não foi possível realizar a consulta'
+				return render_template('home_atend.html',
+										the_title='Bem-vindo, ',
+										the_user=session.get('atendname'),
+										the_completename=session.get('nomecompl'),
+										smessage_name=umessage)
+	return render_template('show_pend.html',
+							array_pendentes = docs_pend)
+
 
 @app.route('/logout', methods=['GET', 'POST'])
 def do_logout() -> 'html':
