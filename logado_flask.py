@@ -263,9 +263,9 @@ def exibir_pendentes() -> 'html':
 			try:
 				pend_query = db.collection('sistemusers').where('confirmed', '==', 2)
 				docs= pend_query.stream()
-				docs_pend = {doc.id:doc.to_dict() for doc in docs}
+				session['docs_pend'] = {doc.id:doc.to_dict() for doc in docs}
 				return render_template('show_pend.html',
-										array_pendentes = docs_pend)
+										array_pendentes = session.get('docs_pend'))
 			except:
 				umessage = 'Não foi possível realizar a consulta'
 				return render_template('home_atend.html',
@@ -274,8 +274,40 @@ def exibir_pendentes() -> 'html':
 										the_completename=session.get('nomecompl'),
 										smessage_name=umessage)
 	return render_template('show_pend.html',
-							array_pendentes = docs_pend)
+							array_pendentes = session.get('docs_pend'))
 
+@app.route('/confirmar_dados', methods=['GET', 'POST'])
+def confirmar_dados() -> 'html':
+	if (request.method == 'POST'):
+			session['dados_email']=request.form['user_atual']
+			try:
+				dados_atual = db.collection('sistemusers').document(session.get('dados_email'))
+				dados_atual.update({'confirmed':3})
+				asmessage = "Dados do usuário {DADOS_EMAIL} confirmados com sucesso!".format(DADOS_EMAIL=session.get('dados_email'))
+				return render_template('show_result.html',
+										smessage = asmessage)
+			except: 
+				aumessage = "Não foi possível confirmar os dados"
+				return render_template('show_pend.html',
+										umassage = aumessage,
+										array_pendentes = session.get('docs_pend'))
+	return render_template ('show_pend.html',
+						   array_pendentes = session.get('docs_pend'))
+
+@app.route('/todos_usuarios', methods=['GET', 'POST'])
+def todos_usuarios() -> 'html':
+	if(request.method=='POST'):
+			try:
+				todos_query = db.collection('sistemusers')
+				docs = todos_query.stream()
+				docs_todos = {doc.id:doc.to_dict() for doc in docs}
+				return render_template('show_allusers.html',
+										array_todos = docs_todos)
+			except:
+				aumessage =	'Não foi possível acessar a lista de usuários.'
+				return render_template('show_result.html',
+										umessage = aumessage)
+	return render_template ('home.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def do_logout() -> 'html':

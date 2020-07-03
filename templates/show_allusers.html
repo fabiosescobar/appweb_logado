@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br/>
+<div class="jumbotron">
+        <h1 class="display-4">Todos os usuários:</h1>
+        <p class="lead">Lista de usuários:</p>
+        <hr class="my-4">
+        {% for row in array_todos %}
+        <div class="form-group">
+            <input type="text" name="user_atual" value="{{row}}" readonly/>
+            {% for indiv in array_todos[row] %}
+            <p>{{indiv}} :
+            {{array_todos[row][indiv]}}</p>
+            {% endfor %}
+        {% endfor %}
+        </div>
+    
+        <form method='POST' action='/exibir_pendentes'>
+        <div class="form-group">
+            <div class="row">
+            <div class="col"><button type="submit" class="btn btn-info">Exibir pendentes</button></div>
+            </div>
+        </div>
+        </form>
+	
+        <form method='POST' action='/logout'>
+        <div class="form-group">
+          <div class="row">
+            <div class="col"><button type="submit" class="btn btn-info">Sair</button></div>
+          </div>
+        </div>
+        </form>
+</div>
+
+{% endblock %}

@@ -6,10 +6,20 @@
         <h1 class="display-4">Usuários com dados pendetentes</h1>
         <p class="lead">Lista de pendências:</p>
         <hr class="my-4">
+        {% if smessage %}
+        <div class="alert alert-success">
+          {{ smessage }}
+        </div>
+      {% endif %}
+      {% if umessage %}
+        <div class="alert alert-danger">
+          {{ umessage }}
+        </div>
+      {% endif %}
         {% for row in array_pendentes %}
         <form method='POST' action='/confirmar_dados'>
             <div class="form-group">
-            <input type="text" name="{{row}}" placeholder="{{row}}" readonly/>
+            <input type="text" name="user_atual" value="{{row}}" readonly/>
             {% for indiv in array_pendentes[row] %}
             <p>{{indiv}} :
             {{array_pendentes[row][indiv]}}</p>
@@ -21,7 +31,14 @@
               </form>
               <hr class="my-4">
         {% endfor %}
-
+        
+        <form method='POST' action='/todos_usuarios'>
+          <div class="form-group">
+            <div class="row">
+              <div class="col"><button type="submit" class="btn btn-info">Exibir todos</button></div>
+            </div>
+          </div>
+        </form>
 	
     <form method='POST' action='/logout'>
         <div class="form-group">

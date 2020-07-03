@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block body %}
+ 
+     <div class="jumbotron">
+        <h2 class="display-4">{{ the_title }}</h2>
+        <hr class="my-4">
+        {% if umessage %}
+          <div class="alert alert-danger">
+            {{ umessage }}
+          </div>
+        {% endif %}
+        {% if smessage %}
+        <div class="alert alert-success">
+          {{ smessage }}
+        </div>
+      {% endif %}
+
+      <form method='POST' action='/exibir_pendentes'>
+        <div class="form-group">
+          <div class="row">
+            <div class="col"><button type="submit" class="btn btn-info">Exibir pendentes</button></div>
+          </div>
+        </div>
+      </form>
+
+      
+
+      <form method='POST' action='/todos_usuarios'>
+        <div class="form-group">
+          <div class="row">
+            <div class="col"><button type="submit" class="btn btn-info">Exibir todos</button></div>
+          </div>
+        </div>
+      </form>
+
+
+  <form method='POST' action='/logout'>
+    <div class="form-group">
+      <div class="row">
+        <div class="col"><button type="submit" class="btn btn-info">Sair</button></div>
+      </div>
+    </div>
+  </form>
+
+  
+</div>
+
+{% endblock %}
