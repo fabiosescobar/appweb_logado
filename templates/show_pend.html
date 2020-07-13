@@ -3,7 +3,7 @@
 {% block body %}
 <br/>
 <div class="jumbotron">
-        <h1 class="display-4">Usuários com dados pendetentes</h1>
+        <h1 class="display-4">Usuários com dados pendentes</h1>
         <p class="lead">Lista de pendências:</p>
         <hr class="my-4">
         {% if smessage %}
@@ -17,20 +17,25 @@
         </div>
       {% endif %}
         {% for row in array_pendentes %}
-        <form method='POST' action='/confirmar_dados'>
-            <div class="form-group">
-            <input type="text" name="user_atual" value="{{row}}" readonly/>
-            {% for indiv in array_pendentes[row] %}
-            <p>{{indiv}} :
-            {{array_pendentes[row][indiv]}}</p>
-            {% endfor %}
-                 <div class="row">
-                    <div class="col"><button type="submit" class="btn btn-info">Confirmar</button></div>
-                  </div>
-                </div>
-              </form>
-              <hr class="my-4">
+        <div class="row">
+          <div class="col">
+          <form method='POST' action='/exibir_usuario'>
+          <div class="form-group">
+            <a href="show_one.html" value="{{row}}">{{row}}</a>
+          </div>
+          </form>
+          </div>
+          <div class="col">
+          <form>
+            <button type="submit" class="btn btn-info">Confirmar</button>
+          </form> 
+          </div>
+        </div>
+        
+    <hr class="my-4">
         {% endfor %}
+                 
+       
         
         <form method='POST' action='/todos_usuarios'>
           <div class="form-group">

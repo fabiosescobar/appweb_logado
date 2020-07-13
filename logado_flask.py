@@ -309,6 +309,30 @@ def todos_usuarios() -> 'html':
 										umessage = aumessage)
 	return render_template ('home.html')
 
+@app.route('/exibir_usuario', methods=['GET', 'POST'])
+def exibir_usuario() -> 'html':
+	if(request.method=='POST'):
+			session['email_exibir']=request.form['usuario']
+			try: 
+				one_query = db.collection('sistemusers').document(session.get('email_exibir'))
+				init_docs=one_query.get()
+				user_docs=init_docs.to_dict()
+				session['username']=user_docs['nickname']
+				session['usercompl']=user_docs['completename']
+				session['userconf']=user_docs['confirmed']
+				#session['userperm']=user_docs['nivel']
+				return render_template('show_one.html',
+										the_email = session.get('email_exibir'),
+										the_nickname = session.get('username'),
+										the_completename = session.get('usercompl'),
+										the_confirmed = session.get('userconf'))
+			except:
+				aumessage =	'Não foi possível acessar os dados do usuário.'
+				return render_template('home_atend.html',
+										umassage=aumessage)
+	return render_template ('home_atend.htm')
+
+
 @app.route('/logout', methods=['GET', 'POST'])
 def do_logout() -> 'html':
 	session.pop('logged_in')

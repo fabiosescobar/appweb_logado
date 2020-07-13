@@ -6,18 +6,11 @@
         <h1 class="display-4">Todos os usuários:</h1>
         <p class="lead">Lista de usuários:</p>
         <hr class="my-4">
-        {% for row in array_todos %}
-        <form method='POST' action='/exibir_usuario'>
-        <div class="form-group">
-          <div class="row">
-            <div class="col"><input type="text" readonly class="form-control-plaintext" name="usuario" value="{{row}}"></div>
-            <div class="col"><button ttype="submit" class="btn btn-link">Dados pessoais</button></div>
-          </div>
+        <h5>Email do usuário: {{ the_email }}</h5>
+        <h5>Nome do usuário: {{ the_nickname }}</h5>
+        <h5>Nome completo: {{ the_completename }}</h5>
+        <h5>Informações confirmadas? (1-Vazio; 2-Não; 3-Sim): {{ the_confirmed }}</h5>
         </div>
-        </form>
-        <hr class="my-4">
-        {% endfor %}
-        
     
         <form method='POST' action='/exibir_pendentes'>
         <div class="form-group">
