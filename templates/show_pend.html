@@ -17,21 +17,15 @@
         </div>
       {% endif %}
         {% for row in array_pendentes %}
-        <div class="row">
-          <div class="col">
-          <form method='POST' action='/exibir_usuario'>
-          <div class="form-group">
-            <a href="show_one.html" value="{{row}}">{{row}}</a>
-          </div>
-          </form>
-          </div>
-          <div class="col">
-          <form>
-            <button type="submit" class="btn btn-info">Confirmar</button>
-          </form> 
+<form method='POST' action='/exibir_usuario'>
+        <div class="form-group">
+          <div class="row">
+            <div class="col"><input type="text" readonly class="form-control-plaintext" name="usuario" value="{{row}}"></div>
+            <div class="col"><button ttype="submit" class="btn btn-link">Dados pessoais</button></div>
           </div>
         </div>
-        
+        </form>
+                
     <hr class="my-4">
         {% endfor %}
                  

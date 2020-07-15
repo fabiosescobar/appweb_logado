@@ -6,12 +6,17 @@
         <h1 class="display-4">Dados de usuário:</h1>
         <p class="lead">Dados pessoais:</p>
         <hr class="my-4">
-        <h5>Email do usuário: {{ the_email }}</h5>
+        <form method='POST' action='/confirmar_dados'>
+        <input type="text" readonly class="form-control-plaintext" name="atual" value="{{the_email}}">
         <h5>Nome do usuário: {{ the_nickname }}</h5>
         <h5>Nome completo: {{ the_completename }}</h5>
         <h5>Informações confirmadas? (1-Vazio; 2-Não; 3-Sim): {{ the_confirmed }}</h5>
-        </div>
-    
+        <h5>Nível (1-Comum; 2-Atendente; 3-Admin): {{ the_nivel }}</h5>
+        {% if (the_confirmed==2): %}
+        <button type="submit" class="btn btn-info">Confirmar</button>
+        {% endif %}
+        </form>
+        <hr class="my-4">
         <form method='POST' action='/exibir_pendentes'>
         <div class="form-group">
             <div class="row">

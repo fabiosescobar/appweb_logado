@@ -40,12 +40,15 @@
             <div class="alert alert-warning">
             {{ amessage_name }}
             </div>
-          {% endif %} 
+          {% endif %}
            {% if smessage_name %}
             <div class="alert alert-success">
             {{ smessage_name }}
             </div>
-          {% endif %} 
+          {% endif %}
+          {% if l %}
+          <a href="{{ l }}">{{ l }}</a>
+          {% endif %}
           {% if umessage_name %}
             <div class="alert alert-danger">
             {{ umessage_name }}

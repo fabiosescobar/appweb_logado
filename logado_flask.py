@@ -21,6 +21,8 @@ firebaseConfig = {
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 
+storage = firebase.storage()
+
 auth = firebase.auth()
 
 cred = credentials.Certificate('firebase-sdk.json')
@@ -237,16 +239,16 @@ def pre_atualizar() -> 'html':
 @check_logged_in
 def atualizar_dados() -> 'html':
 	if (request.method == 'POST'):
-			completename = request.form['completename']
+			session['completename'] = request.form['completename']
 			try:
 				dados_query = db.collection('sistemusers').document(session.get('useremail'))
-				dados_query.update({'completename':completename,
+				dados_query.update({'completename':session.get('completename'),
 									'confirmed':2})
 				unsuccessful = 'Favor, envie documentação comprobatória assinada digitalmente.'
 				return render_template('home.html',
 										the_title='Bem-vindo, ',
 										the_user=session.get('username'),
-										the_completename=completename,
+										the_completename=session.get('completename'),
 										umessage_name=unsuccessful)
 			except:
 				unsuccessful = "Não foi possível atalizar os dados."
@@ -256,6 +258,25 @@ def atualizar_dados() -> 'html':
 										the_user=session.get('username'))
 	return render_template('home.html')
 
+@app.route('/enviar_doc', methods=['GET', 'POST'])
+def enviar_doc() -> 'html':
+	if request.method == 'POST':
+		upload = request.files['upload']
+		caminho = "{EMAIL_USUARIO}{NOME_COMPLETO}/new.pdf".format(EMAIL_USUARIO=session.get('useremail'),NOME_COMPLETO=session.get('completename'))
+		storage.child(caminho).put(upload)
+		links = storage.child(caminho).get_url(None)
+		dmessage = "Documento recebido. Aguarde a confirmação dos dados."
+		return render_template('home.html',
+						the_title='Bem-vindo, ',
+						the_user=session.get('username'),
+						the_completename=session.get('nomecompl'),
+						smessage_name = dmessage,
+						l=links)
+	return render_template('home.html',
+						the_title='Bem-vindo, ',
+						the_user=session.get('username'),
+						the_completename=session.get('nomecompl'))
+						
 @app.route('/exibir_pendentes', methods=['GET', 'POST'])
 @check_logged_in
 def exibir_pendentes() -> 'html':
@@ -279,7 +300,7 @@ def exibir_pendentes() -> 'html':
 @app.route('/confirmar_dados', methods=['GET', 'POST'])
 def confirmar_dados() -> 'html':
 	if (request.method == 'POST'):
-			session['dados_email']=request.form['user_atual']
+			session['dados_email']=request.form['atual']
 			try:
 				dados_atual = db.collection('sistemusers').document(session.get('dados_email'))
 				dados_atual.update({'confirmed':3})
@@ -320,12 +341,13 @@ def exibir_usuario() -> 'html':
 				session['username']=user_docs['nickname']
 				session['usercompl']=user_docs['completename']
 				session['userconf']=user_docs['confirmed']
-				#session['userperm']=user_docs['nivel']
+				session['userperm']=user_docs['nivel']
 				return render_template('show_one.html',
 										the_email = session.get('email_exibir'),
 										the_nickname = session.get('username'),
 										the_completename = session.get('usercompl'),
-										the_confirmed = session.get('userconf'))
+										the_confirmed = session.get('userconf'),
+										the_nivel = session.get('userperm'))
 			except:
 				aumessage =	'Não foi possível acessar os dados do usuário.'
 				return render_template('home_atend.html',
@@ -347,9 +369,10 @@ def entry_page() -> 'html':
 @app.route('/minha_pagina', methods=['POST'])
 @check_logged_in
 def minha_pagina() -> 'html':
-	return render_template('home.html',
-							the_title='Bem-vindo, ',
-							the_user=session.get('username'))
+	return render_template('home_atend.html',
+					the_title='Bem-vindo, ',
+					the_user=session.get('username'),
+					the_completename=session.get('nomecompl'))
 
 app.secret_key = 'V3rd3-Pr4t4-Pr3t0-8r4nc0.$0m3nte-F14t'
 
