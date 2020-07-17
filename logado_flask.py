@@ -251,7 +251,7 @@ def atualizar_dados() -> 'html':
 										the_completename=session.get('completename'),
 										umessage_name=unsuccessful)
 			except:
-				unsuccessful = "Não foi possível atalizar os dados."
+				unsuccessful = "Não foi possível atualizar os dados."
 				return render_template('home.html',
 										umessage=unsuccessful, 
 										the_title='Bem-vindo, ',
@@ -260,18 +260,27 @@ def atualizar_dados() -> 'html':
 
 @app.route('/enviar_doc', methods=['GET', 'POST'])
 def enviar_doc() -> 'html':
-	if request.method == 'POST':
-		upload = request.files['upload']
-		caminho = "{EMAIL_USUARIO}{NOME_COMPLETO}/new.pdf".format(EMAIL_USUARIO=session.get('useremail'),NOME_COMPLETO=session.get('completename'))
-		storage.child(caminho).put(upload)
-		links = storage.child(caminho).get_url(None)
-		dmessage = "Documento recebido. Aguarde a confirmação dos dados."
-		return render_template('home.html',
-						the_title='Bem-vindo, ',
-						the_user=session.get('username'),
-						the_completename=session.get('nomecompl'),
-						smessage_name = dmessage,
-						l=links)
+	if (request.method == 'POST'):
+			upload = request.files['upload']
+			caminho = "{EMAIL_USUARIO}/{NOME_COMPLETO}/new.pdf".format(EMAIL_USUARIO=session.get('useremail'),NOME_COMPLETO=session.get('completename'))
+			storage.child(caminho).put(upload)
+			links = storage.child(caminho).get_url(None)
+			try:
+				dados_doc = db.collection('sistemusers').document(session.get('useremail'))
+				dados_doc.set({caminho:links}, merge=True)
+				dmessage = "Documento recebido. Aguarde a confirmação dos dados."
+				return render_template('home.html',
+										the_title='Bem-vindo, ',
+										the_user=session.get('username'),
+										the_completename=session.get('nomecompl'),
+										smessage_name = dmessage,
+										l=links)
+			except:
+				unsuccessful = "Não foi possível gravar a doumentação."
+				return render_template('home.html',
+										umessage=unsuccessful, 
+										the_title='Bem-vindo, ',
+										the_user=session.get('username'))
 	return render_template('home.html',
 						the_title='Bem-vindo, ',
 						the_user=session.get('username'),
@@ -343,6 +352,7 @@ def exibir_usuario() -> 'html':
 				session['userconf']=user_docs['confirmed']
 				session['userperm']=user_docs['nivel']
 				return render_template('show_one.html',
+										exibir_docs = user_docs,
 										the_email = session.get('email_exibir'),
 										the_nickname = session.get('username'),
 										the_completename = session.get('usercompl'),

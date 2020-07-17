@@ -7,12 +7,18 @@
         <p class="lead">Dados pessoais:</p>
         <hr class="my-4">
         <form method='POST' action='/confirmar_dados'>
-        <input type="text" readonly class="form-control-plaintext" name="atual" value="{{the_email}}">
+        <h4><input type="text" readonly class="form-control-plaintext" name="atual" value="{{the_email}}"></h4>
         <h5>Nome do usuário: {{ the_nickname }}</h5>
         <h5>Nome completo: {{ the_completename }}</h5>
         <h5>Informações confirmadas? (1-Vazio; 2-Não; 3-Sim): {{ the_confirmed }}</h5>
         <h5>Nível (1-Comum; 2-Atendente; 3-Admin): {{ the_nivel }}</h5>
+        <h5>Documentos salvos:</h5>
         {% if (the_confirmed==2): %}
+        {% for row in exibir_docs %}
+        {% if (row!='userid' and row!='nickname' and row!='completename' and row!='confirmed' and row!='nivel'): %}
+        <p>{{row}}:<a href='{{exibir_docs[row]}}' target="_blank">{{exibir_docs[row]}}</a></p>
+        {% endif %}
+        {% endfor %}
         <button type="submit" class="btn btn-info">Confirmar</button>
         {% endif %}
         </form>
